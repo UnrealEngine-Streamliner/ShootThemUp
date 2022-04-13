@@ -1,0 +1,8 @@
+# Rider user specific files
+.idea
+*sln
+Builds/
+DerivedDataCache/
+Intermediate/
+Saved/
+Binaries/
