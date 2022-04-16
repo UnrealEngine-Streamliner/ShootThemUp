@@ -3,8 +3,12 @@
 
 #include "Player/STUBaseCharacter.h"
 
+#include "Components/STUCharacterMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
-ASTUBaseCharacter::ASTUBaseCharacter()
+ASTUBaseCharacter::ASTUBaseCharacter(const FObjectInitializer& ObjInit)
+	: Super(ObjInit.SetDefaultSubobjectClass<USTUCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,10 +46,13 @@ void ASTUBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("LookUp", this, &ASTUBaseCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ASTUBaseCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASTUBaseCharacter::Jump);
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ASTUBaseCharacter::Run);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &ASTUBaseCharacter::StopRun);
 }
 
 void ASTUBaseCharacter::MoveForward(float Amount)
 {
+	IsMovingForward = Amount > 0.0f;
 	AddMovementInput(GetActorForwardVector(), Amount);
 }
 
@@ -53,5 +60,24 @@ void ASTUBaseCharacter::MoveRight(float Amount)
 {
 	AddMovementInput(GetActorRightVector(), Amount);
 }
+
+void ASTUBaseCharacter::Run()
+{
+	WantsToRun = true;
+	GetCharacterMovement()->MaxWalkSpeed = 800;
+}
+
+void ASTUBaseCharacter::StopRun()
+{
+	WantsToRun = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600;
+}
+
+bool ASTUBaseCharacter::IsRunning() const
+{
+	return WantsToRun && IsMovingForward && !GetVelocity().IsZero();
+}
+
+
 
 
