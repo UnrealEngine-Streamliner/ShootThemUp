@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "STUBaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -19,7 +20,9 @@ public:
 	ASTUBaseCharacter();
 
 protected:
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USpringArmComponent* SpringArmComponent;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
 	
